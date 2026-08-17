@@ -9,6 +9,19 @@ Bu skill iki fazlı çalışır. **Faz 1** metinden AI-üretimi yazım imzaları
 
 İki faz birlikte metni AI-steril olmaktan çıkarır ve canlı hâle getirir. Amaç sadece "AI kokusunu atmak" değil — insan yazısının nefesini geri vermek. Ama metnin türü izin verdiği ölçüde. Bir KVKK sözleşmesine konuşma dili girmez, bir gazete yazısına girer.
 
+## Yapı Koruma (Temel Prensip)
+
+Metnin **yapısını değiştirme**. Bu Faz 1'den önce, Faz 2'den önce, her şeyden önce uygulanan temel prensiptir.
+
+- Madde listeleri (bullet, numaralı) liste olarak kalır. Paragrafa çevirme.
+- Başlık hiyerarşisi (H1, H2, H3) korunur.
+- Tablolar tablo olarak kalır.
+- Blok alıntılar (quote) blok olarak kalır.
+- Kod blokları kod olarak kalır.
+- Belge şablonuna ait yapısal alanlar (form kısımları, yönerge kutuları) yerinde bırakılır.
+
+Skill'in işi cümle/paragraf içi dil düzeltmesi. Belge iskeletine dokunma. Kullanıcı açıkça "yapıyı da değiştir" demedikçe.
+
 ## Register Teşhisi
 
 Metni işlemeden önce hangi ailede olduğunu belirle. Beş register kategorisi:
@@ -48,7 +61,10 @@ Türkçe noktalama TDK'ya göre çok kısıtlı kullanım aralığına sahiptir.
 
 - **1d. Bağlaç "ki" bitişik yazma.** AI bazen "bu ki," "şu ki," "durum şu ki" tarzı bitişik kullanım üretir. TDK'ya göre "ki" bağlacı ayrı yazılır — sadece kalıplaşmış "belki, çünkü, mademki, meğerki, oysaki, sanki, hâlbuki" bitişiktir.
 
-**Onarım stratejisi:** Uzun tireleri virgüle çevir veya cümleyi böl. Noktalı virgülleri iki ayrı cümleye ayır. İki noktaları sadece TDK-uygun bağlamlarda tut. Bağlaç "ki"leri ayır.
+- **1e. Slash-ayırıcı alternatifler.** AI İngilizce mantığıyla alternatifleri slash ile ayırır: "kullanıcı/müşteri/istemci", "hızlı/verimli/etkili." Türkçe "kullanıcı, müşteri veya istemci" der. Slash yerine virgül + veya.
+  - Alarm eşiği: metinde 2+ slash-ayırıcı
+
+**Onarım stratejisi:** Uzun tireleri virgüle çevir veya cümleyi böl. Noktalı virgülleri iki ayrı cümleye ayır. İki noktaları sadece TDK-uygun bağlamlarda tut. Bağlaç "ki"leri ayır. Slash-ayırıcıları "A, B veya C" yapısına çevir.
 
 #### Sinyal 2 — Cümle Monotonluğu (Uzunluk Varyansı Düşük)
 
@@ -136,13 +152,56 @@ Aynı paragrafta teknik/bürokratik başlayıp aniden estetik-emotif kelimelere 
 
 **Onarım:** Mümkün olan yerde aktif çatıya çevir. Özne belirginleşsin.
 
+#### Sinyal 12 — İngilizce Vurgu-Doldurucuları
+
+Türkçe cümle yapısı vurguyu dizilim ve tonlama ile yapar, kelime eklemekle değil. LLM İngilizce refleksiyle vurgu kelimelerini Türkçe'ye tıkar. Bu kelimeler cümleden çıkarılınca anlam kaybolmaz — dolgu-vurgu.
+
+**Aile:**
+- **"tam da"** (İng. precisely) — "Bu tam da aradığımız şey", "Tam da o noktada"
+- **"tam anlamıyla"** (İng. literally, truly)
+- **"gerçekten de"** (İng. indeed)
+- **"aslında da"** (İng. in fact)
+- **"kesinlikle"** (dolgu olarak, İng. definitely)
+- **"esasen"** (İng. essentially)
+- **"nihayetinde"** (İng. ultimately)
+- **"bir bakıma"** (İng. in a way)
+- **"gerçek anlamda"** (İng. in a real sense)
+
+Alarm eşiği: bir metinde 2+ örnek.
+
+**Onarım:** Sil. Cümlenin anlamı zaten korunuyor. Gerçek vurgu gerekiyorsa cümle yapısını değiştir (özneyi öne al, kısa cümle patlaması ekle) — kelime eklemekle değil.
+
+#### Sinyal 13 — Eş Anlamlı Rotasyonu
+
+AI aynı özneye tek paragrafta üç ayrı ad verir. Bu İngilizce üslupta "elegant variation" öğütlenir ama Türkçe yazıda **berraklık üretmez, kafa karıştırır**. Okur "bunlar aynı şey mi, farklı mı" diye durur.
+
+**Örnekler:**
+- Aynı özne için: "kullanıcı / müşteri / istemci"
+- Kurumsal: "hükümet / iktidar / yönetim / rejim"
+- Kişi için: "vatandaş / birey / kişi"
+- Şirket için: "firma / şirket / kuruluş"
+
+Alarm eşiği: bir paragrafta aynı özneye 3+ ayrı ad.
+
+**Onarım:** Bir ad seç, o adı kullan. Türkçe akademik yazı geleneği tekrar yapar — bu bir kusur değil, açıklık aracı.
+
+#### Sinyal 14 — Fragment Cümle Bağımlılığı
+
+AI cümleyi iki noktayla açıp fragment liste veya fragment tanım bırakır: "Üç seçenek: A, B, C." "Sonuç şu: yeni bir dönem." Türkçe konuşma tam cümle kurar: "Üç seçenek var: A, B, C." "Sonuç şu, yeni bir dönem başlıyor."
+
+Bu Sinyal 1c (iki nokta üst üste açıklama modu) ile akraba ama farklı: 1c noktalama sorunu, 14 cümle bütünlüğü sorunu.
+
+Alarm eşiği: bir metinde 3+ fragment.
+
+**Onarım:** Fragment'ı tam cümleye tamamla. "Üç seçenek:" → "Üç seçenek var:". "Sonuç:" → "Sonuç şu:", ya da "Sonuç şöyle:".
+
 ## Faz 2 — İnsan Ritmi Enjeksiyonu (Koşullu)
 
 Bu faz register uygunsa çalışır. Her sinyalin yanında hangi register'da aktif olduğu belirtilmiştir.
 
 Faz 2'nin mantığı Faz 1'in tersidir: bunlar **eğer yoksa yerleştir** komutlarıdır, "eğer varsa koru" değil. Steril metne insan nefesi enjekte etmek için.
 
-### Sinyal 12 — Cümle Uzunluğu Patlamaları
+### Sinyal 15 — Cümle Uzunluğu Patlamaları
 
 **Register:** Akademik-kurumsal ve üstü.
 
@@ -150,7 +209,7 @@ Uzun paragraf ortasına 1-3 kelimelik cümle yerleştir. "Bitti dedim." "Kalakal
 
 Bu nefes noktasıdır, ritim kırılmasıdır. Zorlama olmasın — anlamın gerçekten durduğu yere yerleştir.
 
-### Sinyal 13 — Konuşma Bağlaçları
+### Sinyal 16 — Konuşma Bağlaçları
 
 **Register:** Analitik-gazetecilik ve üstü.
 
@@ -158,7 +217,7 @@ Bu nefes noktasıdır, ritim kırılmasıdır. Zorlama olmasın — anlamın ger
 
 Edebi-yaratıcı register'da ekstra: "Valla," "yani," "he," "canım," "ulan" — konuşma tonu açıksa.
 
-### Sinyal 14 — Retorik Soru
+### Sinyal 17 — Retorik Soru
 
 **Register:** Deneme-blog ve üstü.
 
@@ -166,7 +225,7 @@ Anlatıcının okura veya kendine soru sorması. "Ne yapabilirsin ki adama?" "Ne
 
 Bu, iddia etmenin alternatifi — okuru sürece davet eder. AI iddia eder, sorgulamaz.
 
-### Sinyal 15 — Öz-düzeltme ve Yeniden İfade
+### Sinyal 18 — Öz-düzeltme ve Yeniden İfade
 
 **Register:** Akademik-kurumsal ve üstü.
 
@@ -176,7 +235,7 @@ Parantez içi öz-düzeltme de bu ailedir: "(daha doğrusu bu kontrol nedeniyle)
 
 Bu, canlı düşünme imzasıdır — LLM ilk cümlesini takar, düşünmez üstüne.
 
-### Sinyal 16 — Duyusal Somut Detay
+### Sinyal 19 — Duyusal Somut Detay
 
 **Register:** Edebi-yaratıcı.
 
@@ -184,19 +243,19 @@ Bu, canlı düşünme imzasıdır — LLM ilk cümlesini takar, düşünmez üst
 
 AI yazısı sadece görsel-soyut kalır. Edebi metinde duyusal detay olmayan bir betimleme AI'dır.
 
-### Sinyal 17 — Zaman Kipi Kayması
+### Sinyal 20 — Zaman Kipi Kayması
 
 **Register:** Edebi-yaratıcı.
 
 İnsan yazısı şimdiki + geçmiş + geniş zamanı akışkan geçer. AI tek kipe takılır. Edebi metinde tek-kip devam ediyorsa aralara farklı kip yerleştir — özellikle iç ses ile anlatı arasındaki geçişlerde.
 
-### Sinyal 18 — Diyalog İzi
+### Sinyal 21 — Diyalog İzi
 
 **Register:** Edebi-yaratıcı.
 
 Anlatı içinde karakterin sesi geçer — bir cümle direkt alıntı, bir parantez, bir tırnak. "İyi de nereden tanışıyor bu adam?" AI anlatıcı sesini korur, karakterin sesini kaybeder.
 
-### Sinyal 19 — Birinci Çoğul Kullanımı
+### Sinyal 22 — Birinci Çoğul Kullanımı
 
 **Register:** Akademik-kurumsal ve üstü (analitik metinlerde), edebi'de hariç.
 
@@ -225,17 +284,24 @@ Anlatı içinde karakterin sesi geçer — bir cümle direkt alıntı, bir paran
 
 ## Çıktı Formatı (Atlanamaz)
 
-Skill'in her çıktısı üç bölümden oluşur — hiçbiri atlanamaz. Rapor atlanırsa skill başarısız sayılır.
+Skill'in her çıktısı dört bölümden oluşur — hiçbiri atlanamaz. Rapor atlanırsa skill başarısız sayılır.
 
 **1. Tespit Raporu.** Metinde hangi baskın ve ikincil sinyaller görüldü, konumlarıyla:
 > "Sinyal 3a — '-mektedir' salgını: c.1, c.2, c.4 (dört tekrar). Sinyal 4 — 'sadece X değil aynı zamanda Y': c.1'de tam örnek..."
 
-**2. Onarılmış Versiyon.** Tam metin, hem Faz 1 hem Faz 2 uygulanmış.
+**2. Sinyal Yoğunluğu (Nicel Metrik).** Metnin uzunluğunu 100 kelimeye normalize ederek sinyal yoğunluğunu ölç:
+> "Önce: 8.4 sinyal/100 kelime. Sonra: 1.2 sinyal/100 kelime. İyileşme oranı: %86."
 
-**3. Notlar.** Kısa bir açıklama:
+Bu skorlama ASD-STE100 standardından esinlenerek eklendi. Her paragraf için ayrı hesap tutulabilir. Metin uzunluğu 200 kelimeden azsa toplam sinyal sayısını doğrudan ver.
+
+**3. Onarılmış Versiyon.** Tam metin, hem Faz 1 hem Faz 2 uygulanmış.
+
+**4. Notlar.** Kısa bir açıklama:
 > "Şu sinyaller kasıtlı bir tercih olabilir, dokunmadım: [varsa]. Şu yerlerde register kısıtı nedeniyle daha muhafazakâr davrandım: [varsa]. Şu Faz 2 sinyalleri register uygun olduğu için uygulandı: [liste]."
 
-Kullanıcı sadece onarılmış versiyonu istiyorsa raporu atlar ama "rapor da ver" ihtimali için hazır tutar.
+Ayrıca "YOK olduğu için not düştüğüm şeyler" satırı ekle — metinde bulunması beklenip bulunmayan sinyaller. Bu bir editör hoşnutluğu ifadesi: yazar temiz bir metin yazmış, bu tanınmalı.
+
+Kullanıcı sadece onarılmış versiyonu istiyorsa raporu ve nicel metriği atlar ama "rapor da ver" ihtimali için hazır tutar.
 
 ## Sınırlar ve Etik
 
@@ -248,6 +314,7 @@ Kullanıcı sadece onarılmış versiyonu istiyorsa raporu atlar ama "rapor da v
   - Tanpınar tarzı eski Türkçe bağlaçlar ("Şüphesiz," "Vâkıa")
   - Bıçakçı tarzı noktalı virgülle karşıtlık kurma (TDK-uygun edebi tercih)
   - Sürekli aynı yüklem seçimi eğer bilinçli ritim tercihiyse
+  - Fragment bitirme edebi bir tercihse ("Bir akıl." tarzı Tanpınarvari) — bilinçli mi kontrol et
 
 Kullanıcı bağlam belirtmişse ("bu yazar şöyle yazar," "bu benim tarzım") o çerçeveye saygı göster, dokunma.
 
@@ -255,6 +322,12 @@ Kullanıcı bağlam belirtmişse ("bu yazar şöyle yazar," "bu benim tarzım") 
 
 - **Metnin bilgi içeriği korunmalı.** Eğer bir sinyal aynı zamanda bir iddia taşıyorsa, o iddiayı farklı bir yapıyla yeniden ifade et. Sinyal sadece dolgu ise sil.
 
+- **Yapı bütünlüğüne dokunma.** Bu belgenin başında "Yapı Koruma" bölümünde tanımlandı. Madde listeleri liste kalır, başlıklar başlık kalır, tablolar tablo kalır. Cümle/paragraf içi dil düzeltmesi yaparsın, belge iskeletine dokunmazsın.
+
 ## Referans
 
-Türkçe noktalama kararlarında TDK Yazım Kuralları esas alınır (tdk.gov.tr/kategori/icerik/yazim-kurallari). İnsan ritmi sinyalleri Türk edebiyatının yerleşik yazarlarından — Ahmet Hamdi Tanpınar, Ayfer Tunç, Barış Bıçakçı, Ahmet Ümit — stilometrik incelemeyle çıkarıldı. Akademik ritim örnekleri Ortaylı, Keyder, Marcus, Aksoy, Karpat metinlerinden alındı. Genel humanizer mimarisi harshaneel/humanize ve makotofalcon/humanizer-ja projelerinden ilham aldı.
+Türkçe noktalama kararlarında TDK Yazım Kuralları esas alınır (tdk.gov.tr/kategori/icerik/yazim-kurallari). İnsan ritmi sinyalleri Türk edebiyatının yerleşik yazarlarından — Ahmet Hamdi Tanpınar, Ayfer Tunç, Barış Bıçakçı, Ahmet Ümit — stilometrik incelemeyle çıkarıldı. Akademik ritim örnekleri Ortaylı, Keyder, Marcus, Aksoy, Karpat metinlerinden alındı. Nicel metrik ASD-STE100 (Simplified Technical English, 1986) standardının "kural ihlali puanı" mantığından esinlendi. Genel humanizer mimarisi harshaneel/humanize ve makotofalcon/humanizer-ja projelerinden ilham aldı.
+
+---
+
+**Sürüm:** v2.1 (Ağustos 2026)
