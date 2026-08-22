@@ -56,6 +56,30 @@ curl -L -o ~/.claude/skills/turkce-humanizer/SKILL.md \
 
 `SKILL.md` dosyasını indir, Claude'a upload et veya Skills panelinden yükle.
 
+### Codex
+
+Bu skill'in mevcut `SKILL.md` formatı Codex ile de uyumludur. Proje kapsamındaki bir Codex oturumunda kullanmak için hedef projenin kök dizininde aşağıdaki komutu çalıştır:
+
+```bash
+mkdir -p .agents/skills/turkce-humanizer
+curl -L -o .agents/skills/turkce-humanizer/SKILL.md \
+  https://raw.githubusercontent.com/bushrabeg/turkce-humanizer/main/SKILL.md
+```
+
+Windows PowerShell için:
+
+```powershell
+$skillDir = Join-Path $PWD ".agents\skills\turkce-humanizer"
+New-Item -ItemType Directory -Force -Path $skillDir
+Invoke-WebRequest -UseBasicParsing `
+  -Uri "https://raw.githubusercontent.com/bushrabeg/turkce-humanizer/main/SKILL.md" `
+  -OutFile (Join-Path $skillDir "SKILL.md")
+```
+
+Skill'i tüm projelerde kullanmak istersen, komutlardaki proje kökü yerine kullanıcı dizinini kullan: Bash'te `~/.agents/skills/turkce-humanizer`, PowerShell'de `Join-Path $HOME ".agents\skills\turkce-humanizer"`.
+
+Kurulumdan sonra Codex skill'i otomatik olarak keşfeder. Açıkça çağırmak için `$turkce-humanizer` yazabilir; "AI kokusunu at" veya "bu Türkçe metni doğallaştır" gibi isteklerle otomatik tetiklenmesini de sağlayabilirsin.
+
 ## Kullanım
 
 ```
