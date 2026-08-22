@@ -1,92 +1,122 @@
 # turkce-humanizer
 
-> Türkçe metinlerden yapay zekâ yazım imzalarını temizleyen Claude skill'i.
-> A Claude skill that removes AI writing signatures from Turkish text.
+> Türkçe metinlerden yapay zekâ yazım imzalarını temizleyen Claude skill'i. A Claude skill that removes AI writing signatures from Turkish text.
 
-**Güncel sürüm:** v2.1 ([release notları](https://github.com/bushrabeg/turkce-humanizer/releases))
+**Güncel sürüm:** v3.2 · **Lisans:** MIT · **Uyumluluk:** Claude Desktop, Claude Code CLI, Claude.ai
+
+---
 
 ## Ne Yapar
 
-Türkçe LLM çıktılarının kendine özgü bir kokusu var: `-mektedir` salgını, "sadece X değil, aynı zamanda Y" retoriği, "bu bağlamda / söz konusu / kritik bir rol oynamaktadır" bürokratik bağlaç zinciri, boş değerlendirici sıfat kümeleri, zorlama noktalı virgül köprüleri, "tam da" gibi İngilizce vurgu-doldurucuları. Bu skill Claude'a bu imzaları tanımayı ve **metnin bilgi içeriğini bozmadan** temizlemeyi öğretir. Register uygunsa insan Türkçesinin ritim imzalarını da yerleştirir.
+Türkçe LLM çıktılarının kendine özgü bir kokusu var: `-mektedir` salgını, "sadece X değil, aynı zamanda Y" retoriği, "bu bağlamda / söz konusu / kritik bir rol oynamaktadır" bürokratik bağlaç zinciri, boş değerlendirici sıfat kümeleri, zorlama noktalı virgül köprüleri, "işte" ve "tam da" gibi İngilizce vurgu-doldurucuları, cümle sonlarına iliştirilen boş övgü kapanışları.
 
-## Neden Türkçe İçin Ayrı Bir Skill
+Bu skill Claude'a bu imzaları tanımayı ve temizlemeyi öğretir. Türkçenin kendi ritim geleneğini referans alır — Tanpınar, Ayfer Tunç, Barış Bıçakçı, Ahmet Ümit, İlber Ortaylı, Kemal Karpat, Çağlar Keyder gibi yerleşik yazarların cümle mimarisini.
 
-İngilizce humanizer skill'leri (`harshaneel/humanize`, `blader/humanizer`) İngilizce'nin AI-imzasına — em dash, "delve/testament/pivotal," rule of three — göre kalibre edilmiş. Türkçe farklı davranıyor:
+Amaç sadece AI kokusunu atmak değil, insan yazısının nefesini geri vermek.
 
-- Türkçe **eklemeli** bir dil; AI kokusu ekin sırasında ve sıklığında görünüyor
-- Türkçe **serbest dizilim** izin veriyor ama LLM devrik cümleden kaçınıyor
-- Türkçe **register salınımı** İngilizce'den daha keskin (Osmanlıca / Öz Türkçe / gündelik)
-- **Ses uyumu** ve nadir kelimelerde ek uyumsuzluğu Türkçe-özgü sinyaller
-- **Noktalama mantığı farklı**: TDK'ya göre noktalı virgül, iki nokta ve uzun tire kısıtlı kullanılır — AI İngilizce mantığıyla bunları şişirir
+## Nasıl Çalışır
 
-Bu skill Türkçe'nin kendi AI-imzası taksonomisi üzerine kurulu, İngilizce şablonun çevirisi değil. Ayrıca **register-farkında**: bir KVKK sözleşmesine konuşma dili girmez, bir gazete yazısına girer.
+İki fazlı mimari:
 
-## Nasıl Çalışıyor
+- **Faz 1 (koşulsuz):** Metinden AI-üretimi yazım imzalarını çıkarır. Her metne uygulanır.
+- **Faz 2 (koşullu):** Metnin registeri uygunsa insan Türkçesinin ritim imzalarını yerleştirir. Türe göre değişir.
 
-**İki fazlı mimari:**
+Beş register kategorisi tanır: hukuki-idari, akademik-kurumsal, analitik-gazetecilik, deneme-blog, edebi-yaratıcı. Her registerde farklı davranır. KVKK sözleşmesine konuşma dili sokmaz, blog yazısına akademik ritim dayatmaz.
 
-- **Faz 1** — AI dokunuşlarını çıkarır (14 sinyal), koşulsuz uygulanır
-- **Faz 2** — İnsan Türkçesinin ritim imzalarını yerleştirir (8 sinyal), metnin registerine göre koşullu uygulanır
+## Beş Mutlak Yasak
 
-**Register teşhisi** — Beş kategori: hukuki-idari, akademik-kurumsal, analitik-gazetecilik, deneme-blog, edebi-yaratıcı. Skill otomatik teşhis yapar ve kullanıcıya doğrulatır.
+Bu beş yasak her metinde, her register'da, her koşulda uygulanır. TDK-uygun olsa bile skill çıktısında yer almaz:
 
-**Nicel metrik** — Sinyal-başına-100-kelime skoru (ASD-STE100 esinli). Skill "önce X sinyal / 100 kelime, sonra Y sinyal / 100 kelime, iyileşme %Z" raporu verir.
+1. Uzun çizgi (—)
+2. Noktalı virgül
+3. Yarım cümle
+4. Bağlaçla açılan izole cümle
+5. Karşıtlık bağlaçlarından önce virgül ("ama" öncesi virgül gibi)
 
-## Örnek
+## Yazar Profili Sistemi
 
-**AI Türkçesi:**
+Skill senin yazım imzanı öğrenebilir. Sohbet başında (register profil-uyumluysa) skill sana sorar: "Senin ritmini katmamı istersen kendi yazdığın 2-3 kısa metin paylaş."
 
-> Söz konusu dinamikler, hükümetler ve şirketler arasındaki güç dengelerini yeniden tanımlamaktadır. Bu bağlamda, yapay zekâ çağında ülkelerin stratejik pozisyonlanması, hayati bir önem taşımaktadır.
+Örnek verdiğinde skill senin nefes uzunluğunu, bağlaç tercihini, kavramlaştırma kalıplarını ve ritim imzalarını çıkarır. O sohbet boyunca kullanır. Yeni sohbette baştan sorulur.
 
-**Skill'den geçen:**
-
-> Ortaya çıkan tablo, hükümetlerle büyük model şirketleri arasındaki gücü yeniden dağıtıyor. Bir ülkenin bu dağılımda nereye düştüğü, önümüzdeki on yılın soruları arasında en belirleyici olanı.
+Kişisel dosya sistemine erişim gerekmez. Her platformda çalışır.
 
 ## Kurulum
 
-### Claude Code
+### Claude Desktop (en yaygın)
+
+1. Bu repo'yu ZIP olarak indir (yeşil **Code → Download ZIP** butonu).
+2. Claude Desktop → **Settings → Capabilities → Skills**.
+3. **Add Skill** ile ZIP klasörünü yükle.
+4. Skill aktif hale gelir.
+
+### Claude Code CLI
 
 ```bash
-mkdir -p ~/.claude/skills/turkce-humanizer
-curl -L -o ~/.claude/skills/turkce-humanizer/SKILL.md \
-  https://raw.githubusercontent.com/bushrabeg/turkce-humanizer/main/SKILL.md
+cd ~/.claude/skills/
+git clone https://github.com/bushrabeg/turkce-humanizer.git
 ```
 
-### Claude.ai / Claude Desktop
+### Kullanım
 
-`SKILL.md` dosyasını indir, Claude'a upload et veya Skills panelinden yükle.
+Claude'a bir Türkçe metin at ve şunu de:
 
-## Kullanım
+> "Bu metni humanize et."
+
+Ya da:
+
+> "AI kokusunu at."
+
+Skill devreye girer. Önce register'ı doğrular, register profil-uyumluysa profil sorar, sonra iki fazlı işleme başlar. Sonda beş bölümlü rapor sunar: tespit raporu, sinyal yoğunluğu, onarılmış metin, değişiklik özeti, notlar.
+
+## Repo Yapısı
 
 ```
-Bu metni türkçeleştir:
-[AI-üretimi Türkçe paragraf]
+turkce-humanizer/
+├── SKILL.md              # Ana skill dosyası
+├── README.md             # Bu dosya
+├── ROADMAP.md            # v3.0+ yol haritası
+├── LICENSE               # MIT
+├── docs/
+│   ├── tdk-referanslari.md      # TDK'nın noktalama kurallarıyla ilişki
+│   ├── register-detayli.md      # Beş register kategorisi detayı
+│   └── mimari-kararlar.md       # Tasarım kararlarının gerekçesi
+└── examples/
+    └── gucli-cumleler.md        # Türkçe güçlü cümle referans korpusu
 ```
 
-veya
+## Sürüm Geçmişi
 
-```
-Şu paragraftaki AI kokusunu at:
-[metin]
-```
+- **v3.2** (Ağustos 2026): Sohbet-içi profil sistemi (Desktop uyumluluğu), Sinyal 23 soru varyantı.
+- **v3.1** (Ağustos 2026): "İşlem başlamadan önce" bölümü, Sinyal 23 (şudur/budur), Sinyal 4/12/18 zenginleşmesi.
+- **v3.0** (Ağustos 2026): Beş mutlak yasak, yazar profili sistemi, kullanıcıya danışma protokolü, değişiklik özeti, kabul oranı log'u.
+- **v2.1** (Ağustos 2026): 22 sinyal, yapı koruma prensibi, nicel metrik.
+- **v2.0** (Ağustos 2026): İki fazlı mimari, 5 register kategorisi, 19 sinyal.
+- **v0.1** (Ağustos 2026): İlk sürüm, 10 sinyal.
 
-Skill önce register teşhisi yapar, sonra tespit raporu + nicel metrik + onarılmış versiyon + notlar sunar.
-
-## Kaynaklar ve Teşekkür
-
-Bu skill şu çalışmalardan ilham aldı:
-
-- [`harshaneel/humanize`](https://github.com/harshaneel/humanize) — dokuz-kaldıraç mimarisi ve maker/checker deseni
-- [`makotofalcon/humanizer-ja`](https://github.com/makotofalcon/humanizer-ja) — dile özgü adaptasyon örneği
-- [`blader/humanizer`](https://github.com/blader/humanizer) — Wikipedia "Signs of AI writing" temelli orijinal yaklaşım
-- **ASD-STE100** (Simplified Technical English, 1986) — nicel metrik ilhamı
-
-Türkçe taksonomi, beş Türkçe kitabın (Ortaylı, Keyder, Marcus, Aksoy, Karpat) stilometrik incelemesi ve dört Türk yazarın (Tanpınar, Ayfer Tunç, Barış Bıçakçı, Ahmet Ümit) ritim analiziyle kuruldu. Noktalama katmanı TDK Yazım Kuralları temelli.
+Detaylı release notları için [Releases](https://github.com/bushrabeg/turkce-humanizer/releases) sayfasına bakılır.
 
 ## Katkı
 
-Issue açarak yeni AI-Türkçesi kalıpları önerebilir, yanlış tespit örnekleri paylaşabilirsiniz. PR'lar açıktır.
+Katkıya açık. Özellikle şu alanlarda:
+
+- `examples/gucli-cumleler.md` — Türkçe güçlü cümle örnekleri (kitap alıntıları, gazete köşeleri, akademik pasajlar).
+- Yeni AI-imzası tespiti — Türkçe LLM çıktısında fark ettiğin yeni bir kalıbı issue olarak açabilirsin.
+- Register sınır durumları — belirsiz register durumları için `docs/register-detayli.md`'ye örnek eklenebilir.
+
+Pull request açmadan önce SKILL.md'nin mimari kararlarına ([docs/mimari-kararlar.md](docs/mimari-kararlar.md)) göz atman öneririm.
+
+## Referans
+
+- **TDK Yazım Kuralları** — noktalama kararlarında temel referans.
+- **ASD-STE100 (1986)** — nicel metrik ilhamı.
+- **harshaneel/humanize, makotofalcon/humanizer-ja** — genel humanizer mimarisi ilhamı.
+- **Türk edebiyat ve akademi geleneği** — ritim imzaları için stilometrik referans.
+
+## Yazar
+
+**Büşra Begçecanlı** ([@bushrabeg](https://github.com/bushrabeg)) — Anadolu Ajansı gazeteci ve araştırmacı, AA Kitap yayın birimi, Teknopolitika.com kurucu ortağı, intelligence studies alanında yüksek lisans. Skill'in taksonomisi, kalibrasyonu ve editör kararları kendi editörlük deneyimine dayanıyor.
 
 ## Lisans
 
-MIT
+MIT — özgürce kullan, değiştir, dağıt.
