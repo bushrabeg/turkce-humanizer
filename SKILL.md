@@ -9,9 +9,46 @@ Bu skill iki fazlı çalışır. **Faz 1** metinden AI-üretimi yazım imzaları
 
 İki faz birlikte metni AI-steril olmaktan çıkarır ve canlı hâle getirir. Amaç sadece AI kokusunu atmak değil, insan yazısının nefesini geri vermek. Ama metnin türü izin verdiği ölçüde. Bir KVKK sözleşmesine konuşma dili girmez, bir gazete yazısına girer.
 
-## Dört Mutlak Yasak (Register-Bağımsız)
+## İŞLEM BAŞLAMADAN ÖNCE — Zorunlu İlk Adımlar
 
-Bu dört yasak her metinde, her register'da, her koşulda uygulanır. TDK'ya uygun olsa bile uygulanır. Faz 1'den önce, Faz 2'den önce, her şeyden önce.
+**BU BÖLÜM ATLANAMAZ.** Skill herhangi bir sinyal tarama veya temizleme işlemine başlamadan önce şu iki adımı **sırayla** uygular:
+
+### Adım 1 — Register Teşhisi
+
+Metni oku, hangi register'da olduğunu belirle (beş kategoriden biri, aşağıda tanımlı). Kullanıcı baştan register belirtmişse ("bu blog yazısı," "bu akademik metin") bu adımı atla. Belirtmemişse teşhisini kullanıcıya bildir:
+
+> "Bu metni [register adı] olarak görüyorum. Onaylıyor musun?"
+
+Kullanıcı düzeltirse kabul et.
+
+### Adım 2 — Profil Kontrolü
+
+Register teşhisi netleştikten sonra, **temizleme işlemine başlamadan önce**, profil kontrolünü yap.
+
+**Register profil-uyumsuz (hukuki-idari, akademik-kurumsal):** Bu adımı atla, Adım 3'e geç.
+
+**Register profil-uyumlu (analitik-gazetecilik, deneme-blog, edebi-yaratıcı):**
+
+- `~/.claude/skills/turkce-humanizer/profiles/ben.md` dosyasını kontrol et.
+- **Profil dosyası varsa:** kullan, Adım 3'e geç.
+- **Profil dosyası yoksa:** BU SORUYU MUTLAKA SOR, atlanamaz:
+
+  > "Bu metin profil uygulamaya uygun bir register'da. Senin ritmini katmamı istersen kendi yazdığın bir metni paylaş, profilini oluşturayım. İstemiyorsan devam edebilirim."
+
+  Kullanıcının cevabını bekle. Cevaba göre:
+  - Kullanıcı örnek metin yapıştırırsa: profili oluştur, dosyaya yaz, sonra Adım 3'e geç.
+  - Kullanıcı "istemiyorum" derse: profilsiz devam et, Adım 3'e geç.
+  - Bu soru sohbette bir kez sorulur, ikinci profil-uyumlu metinde tekrar sorma.
+
+**KRİTİK UYARI:** Profil sorgusu SKILL.md'nin sonraki bölümlerinde tekrar tanımlı ama **buradaki tanım önceliklidir**. Skill "sinyal tara, temizle, çıktı ver" ana akışına girdiğinde bu adımı atlar. Bunu önlemek için: profil kontrolü **temizleme öncesi ilk iş** olarak yapılır, sonrasında değil.
+
+### Adım 3 — İşleme Başla
+
+Adım 1 ve 2 tamamlandıktan sonra Faz 1 ve Faz 2 uygulanır.
+
+## Beş Mutlak Yasak (Register-Bağımsız)
+
+Bu beş yasak her metinde, her register'da, her koşulda uygulanır. TDK'ya uygun olsa bile uygulanır. Faz 1'den önce, Faz 2'den önce, her şeyden önce.
 
 **1. Uzun çizgi yasak.** Cümle içinde uzun çizgi (—) kullanılmaz. Ara söz için virgül kullanılır ya da cümle bölünür. Konuşma çizgisi olarak diyalog başında bile bu skill'in çıktısında yer almaz. Uzun çizgi Türkçe AI çıktısının en belirgin imzalarından biridir.
 
@@ -51,7 +88,7 @@ Referans yazarlar: Ahmet Hamdi Tanpınar, Ayfer Tunç, Barış Bıçakçı, Ahme
 
 ## Yapı Koruma
 
-Metnin yapısını değiştirme. Bu dört yasaktan sonra, her şeyden önce uygulanır.
+Metnin yapısını değiştirme. Bu beş yasaktan sonra, her şeyden önce uygulanır.
 
 - Madde listeleri liste olarak kalır. Paragrafa çevirme.
 - Başlık hiyerarşisi korunur.
@@ -74,32 +111,17 @@ Metni işlemeden önce hangi ailede olduğunu belirle. Beş register kategorisi:
 | **Deneme-blog** | Deneme, köşe yazısı, blog, sosyal medya uzun formatı | Tam | Var |
 | **Edebi-yaratıcı** | Roman, öykü, denemeye yakın anlatı | Tam artı duyusal detay ve zaman kipi | Var |
 
-Metni okuduğunda ilk seçim skill'e ait değil, kullanıcıya doğrulatılır. Skill otomatik bir tahmin yapar ve kullanıcıya sorar: "Bu metni [register adı] olarak görüyorum. Onaylıyor musun, yoksa başka bir register mi?"
-
-Kullanıcı baştan register belirtmişse ("bu blog yazısı," "bu akademik metin") teşhis atlanır. Sınır durumlarda (analitik-gazetecilik ile deneme-blog arasında sıkışan metinler gibi) detaylı ayrım için `docs/register-detayli.md` dosyasına bakılabilir.
+Metni okuduğunda ilk seçim skill'e ait değil, kullanıcıya doğrulatılır (İşlem Başlamadan Önce, Adım 1'e bakılır). Sınır durumlarda (analitik-gazetecilik ile deneme-blog arasında sıkışan metinler gibi) detaylı ayrım için `docs/register-detayli.md` dosyasına bakılabilir.
 
 ## Yazar Profili Sistemi
 
-Register profil-uyumluysa (analitik-gazetecilik, deneme-blog, edebi-yaratıcı), skill yazarın kendi imzasını da hesaba katar.
+Register profil-uyumluysa (analitik-gazetecilik, deneme-blog, edebi-yaratıcı), skill yazarın kendi imzasını da hesaba katar. Profil kontrolü işlem başında yapılır (İşlem Başlamadan Önce, Adım 2'ye bakılır).
 
 ### Profil dosyası
 
 Profil kullanıcının makinesinde `~/.claude/skills/turkce-humanizer/profiles/ben.md` yolunda tutulur. İçeriği ham metindir: kullanıcının kendi yazdığı üç ile beş örnek metin. Skill bu örneklerden yazarın nefes uzunluğunu, kavram üretme kalıplarını, tercih ettiği ritmi çıkarır ve koruma listesine ekler.
 
 Kullanıcı YAML yazmaz, alan doldurmaz. Sadece metin yapıştırır.
-
-### Profil sorgu mantığı
-
-Kullanıcı bir metin atar ve humanize istendi. Skill register'ı belirler.
-
-**Register profil-uyumsuz (hukuki, akademik-kurumsal):** Skill profil konusunu hiç açmaz. Doğrudan işi yapar.
-
-**Register profil-uyumlu:** Skill profil dosyasını kontrol eder.
-
-- Profil varsa: kullanır, işi yapar.
-- Profil yoksa: bir kez sorar. "Bu metin profil uygulamaya uygun bir register'da. Senin ritmini katmamı istersen kendi yazdığın bir metni paylaş, profilini oluşturayım. İstemiyorsan devam edebilirim."
-  - Kullanıcı örnek yapıştırırsa: skill profili oluşturur, dosyaya yazar, aynı çalıştırmada humanize yapar.
-  - Kullanıcı "istemiyorum" derse: profilsiz humanize yapar.
 
 ### Tercih hafızası
 
@@ -187,6 +209,10 @@ Varyantlar:
 - "X olmakla birlikte, Y niteliğini de taşımaktadır"
 - "X'in ötesinde, Y boyutu göz ardı edilmemelidir"
 - "Salt X değil; bir Y meselesi"
+- **"değil, yalnızca Y"** (yeni v3.1)
+- **"değil, sadece Y"** (yeni v3.1)
+- **"değil, sırf Y"** (yeni v3.1)
+- **"X değil Y"** (kısa form, aynı retorik) (yeni v3.1)
 
 Alarm eşiği: bir metinde bir örnek.
 
@@ -194,6 +220,10 @@ Alarm eşiği: bir metinde bir örnek.
 - "Hem X hem Y" yapısına çevir (bu daha doğal Türkçe)
 - İki bağımsız cümle yap (ikinci cümle bağlaçla açılmasın, mutlak yasak 4)
 - Bağı tamamen kaldır, sadece Y'yi bırak (X gereksizse)
+
+Örnek onarım (v3.1):
+- Yasak: "Bir barış antlaşması değil, yalnızca iki başlıkta müzakere yürütme taahhüdüydü."
+- İzinli: "Barış antlaşması değildi. İki başlıkta müzakere yürütme taahhüdüydü." veya "Metin iki başlıkta müzakere taahhüdüydü, barış antlaşması değil."
 
 #### Sinyal 5 — Boş Övgü ve Boş Kapanış
 
@@ -229,7 +259,7 @@ Bu sinyaller tek başına AI-imzası kanıtı değildir ama baskın sinyallerle 
 **Sinyal 11 — Pasif yapı bağımlılığı.** Cümlelerin çoğu pasif çatıda. "Yapılmaktadır, edilmektedir, kılınmaktadır." Öznesizleştirme.
 - Onarım: mümkün olan yerde aktif çatıya çevir.
 
-**Sinyal 12 — İngilizce vurgu-doldurucuları.** Türkçe cümle yapısı vurguyu dizilim ve tonlama ile yapar, kelime eklemekle değil. LLM İngilizce refleksiyle vurgu kelimelerini tıkar.
+**Sinyal 12 — İngilizce vurgu-doldurucuları ve Türkçe AI-vurgusu.** Türkçe cümle yapısı vurguyu dizilim ve tonlama ile yapar, kelime eklemekle değil. LLM İngilizce refleksiyle vurgu kelimelerini tıkar. Ayrıca Türkçe AI çıktısının kendine özgü vurgu-doldurucuları vardır.
 
 Aile:
 - "tam da" (İng. precisely)
@@ -241,9 +271,18 @@ Aile:
 - "nihayetinde" (İng. ultimately)
 - "bir bakıma" (İng. in a way)
 - "gerçek anlamda" (İng. in a real sense)
+- **"işte" (cümle başında dolgu olarak)** (yeni v3.1)
+- **"işte tam da"** (yeni v3.1)
+- **"işte bu"** (cümle başında dolgu olarak) (yeni v3.1)
+- **"böylece" (mantık bağı taşımıyorsa)** (yeni v3.1)
+- **"sonuç olarak" (özet değil dolgu ise)** (yeni v3.1)
 
 - Alarm eşiği: metinde iki veya daha fazla örnek.
 - Onarım: sil. Cümlenin anlamı zaten korunuyor.
+
+Örnek onarım (v3.1):
+- Yasak: "İşte bu belirsizlik, özellikle Hürmüz maddesindeki muğlaklık, kısa sürede anlaşmanın kırılma noktasına dönüştü."
+- İzinli: "Bu belirsizlik, özellikle Hürmüz maddesindeki muğlaklık, kısa sürede anlaşmanın kırılma noktasına dönüştü."
 
 **Sinyal 13 — Eş anlamlı rotasyonu.** AI aynı özneye tek paragrafta üç ayrı ad verir. İngilizce üslupta "elegant variation" öğütlenir ama Türkçe'de kafa karıştırır.
 
@@ -259,6 +298,29 @@ Aile:
 
 **Sinyal 14 — Fragment cümle bağımlılığı.** Mutlak yasak 3 ile örtüşür. AI cümleyi iki noktayla açıp fragment liste veya fragment tanım bırakır: "Üç seçenek: A, B, C." "Sonuç şu: yeni bir dönem."
 - Onarım: fragment'ı tam cümleye tamamla. "Üç seçenek var: A, B, C." "Sonuç şu, yeni bir dönem başlıyor."
+
+#### Sinyal 23 — Şudur/Budur Açıklama Kalıbı (yeni v3.1)
+
+AI Türkçe çıktısı "X şudur: Y" veya "Kesin olan tek şey şudur: Y" gibi açıklama kalıpları üretir. Bu İngilizce "The thing is: X" veya "What is certain is: X" kalıplarının zorla çevirisi. Türkçe akademik ve edebi gelenek bu kalıbı yaygın kullanmaz; bunun yerine tümce-içi yeniden yapılandırma yapar.
+
+Varyantlar:
+- "X şudur: Y"
+- "Kesin olan tek şey şudur: Y"
+- "Anlaşılan şey şudur: Y"
+- "Ortaya çıkan tablo şudur: Y"
+- "Söylenmesi gereken şudur: Y"
+
+- Alarm eşiği: bir metinde bir örnek yeter.
+- Onarım: iki nokta üst üsteyi kaldır, cümleyi "Y olan X" yapısına çevir. Türkçe'de bu yapı klasik akademik ritmin bir hamlesidir (Ortaylı, Karpat sık yapar).
+
+Örnek onarım:
+- Yasak: "Kesin olan tek şey şudur: Üçgen, eski geometrisine bir daha dönmeyecek."
+- İzinli: "Üçgenin eski geometrisine dönmeyeceği kesin olan tek şey."
+
+- Yasak: "Yine de bir soru ısrarla beklemekte: Tahran ile Washington'ı, birbirlerini doğrudan vurmaktan kırk beş yıl boyunca alıkoyan neydi ve o engel ne zaman ortadan kalktı?"
+- İzinli: "Tahran ile Washington'ın, birbirlerini doğrudan vurmaktan kırk beş yıl boyunca alıkoyanın ne olduğu ve o engelin ne zaman ortadan kalktığı sorusu ısrarla beklemekte."
+
+Bu sinyal Sinyal 1c (iki nokta üst üste açıklama modu) ile örtüşebilir ama farklıdır: 1c cümle içi mini tanımları hedefler, 23 tümce-içi yeniden yapılandırmayı hedefler.
 
 ## Faz 2 — İnsan Ritmi Enjeksiyonu (Koşullu)
 
@@ -310,6 +372,18 @@ Yazar kendi cümlesini düzeltir, geri alır, yeniden söyler.
 Parantez içi öz-düzeltme de bu ailedir: "(daha doğrusu bu kontrol nedeniyle)."
 
 Bu canlı düşünme imzasıdır — LLM ilk cümlesini takar, düşünmez üstüne.
+
+**Öz-düzeltme sözcüklerinin yerleşimi (v3.1 rafineleme):**
+
+"Daha doğrusu," "aslında," "işin doğrusu," "belki de," "hayır" gibi öz-düzeltme sözcükleri iki farklı biçimde yerleştirilebilir:
+
+1. **Ara söz olarak virgüllerle sarma:** Kısa bir düzeltme hissi verir. Konuşma diline yakındır.
+   - Örnek: "Üç perde böyle kapandı, daha doğrusu, anlatının perdesi indi."
+
+2. **Yeni cümle başı olarak yerleştirme:** Daha ağırlıklı vurgu verir. Akademik-analitik registerde tercih edilir.
+   - Örnek: "Üç perde böyle kapandı. Daha doğrusu anlatının perdesi indi."
+
+**Akademik-kurumsal ve analitik-gazetecilik registerlerinde ikinci hamle tercih edilir** — öz-düzeltme sözcüğü yeni cümle başı olur, öncesindeki virgül silinir, sonrasındaki virgül de silinir. Deneme-blog ve edebi-yaratıcı registerlerde her iki hamle de kullanılabilir.
 
 ### Sinyal 19 — Duyusal Somut Detay
 
@@ -444,4 +518,14 @@ Nicel metrik ASD-STE100 (Simplified Technical English, 1986) standardının kura
 
 ---
 
-**Sürüm:** v3.0 (Ağustos 2026)
+**Sürüm:** v3.1 (Ağustos 2026)
+
+## v3.1 Değişiklik Notları
+
+v3.0'dan v3.1'e geçişte yapılan düzeltmeler:
+
+1. **"İşlem Başlamadan Önce" bölümü eklendi.** Profil kontrolü artık işlemin ilk adımı, sonraki bir alt-madde değil. Bu değişiklik profil sorgusunun atlanma sorununu çözer.
+2. **Sinyal 4 zenginleştirildi.** "değil, yalnızca Y", "değil, sadece Y", "değil, sırf Y", "X değil Y" varyantları eklendi.
+3. **Sinyal 12 zenginleştirildi.** "işte", "işte tam da", "işte bu", "böylece", "sonuç olarak" (dolgu olduğunda) eklendi.
+4. **Sinyal 18 rafinelendi.** Öz-düzeltme sözcüklerinin (daha doğrusu, aslında, işin doğrusu) akademik-analitik registerde yeni cümle başı olarak yerleştirilmesi tercih edilir hale getirildi.
+5. **Sinyal 23 eklendi.** Şudur/budur açıklama kalıbı (iki nokta üst üsteyle açılan tümce-içi yeniden yapılandırma).
