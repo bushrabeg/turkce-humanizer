@@ -82,7 +82,7 @@ turkce-humanizer/
 │   ├── register-detayli.md      # Beş register kategorisi detayı
 │   └── mimari-kararlar.md       # Tasarım kararlarının gerekçesi
 └── examples/
-    └── gucli-cumleler.md        # Türkçe güçlü cümle referans korpusu
+    └── guclu-cumleler.md        # Türkçe güçlü cümle referans korpusu
 ```
 
 ## Sürüm Geçmişi
@@ -100,7 +100,7 @@ Detaylı release notları için [Releases](https://github.com/bushrabeg/turkce-h
 
 Katkıya açık. Özellikle şu alanlarda:
 
-- `examples/gucli-cumleler.md` — Türkçe güçlü cümle örnekleri (kitap alıntıları, gazete köşeleri, akademik pasajlar).
+- `examples/guclu-cumleler.md` — Türkçe güçlü cümle örnekleri (kitap alıntıları, gazete köşeleri, akademik pasajlar).
 - Yeni AI-imzası tespiti — Türkçe LLM çıktısında fark ettiğin yeni bir kalıbı issue olarak açabilirsin.
 - Register sınır durumları — belirsiz register durumları için `docs/register-detayli.md`'ye örnek eklenebilir.
 
