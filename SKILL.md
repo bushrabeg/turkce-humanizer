@@ -75,7 +75,7 @@ Bu beş yasağın hiçbiri register'a bağlı değildir. Her metne uygulanır. D
 
 ## Pozitif Yön — Güçlü Cümle Hedefi
 
-Skill kısaltıcı değil, güçlendiricidir. Hedef Türk edebiyatının ve akademisinin yerleşik cümle mimarisidir. Örnek referanslar `examples/gucli-cumleler.md` dosyasında tutulur.
+Skill kısaltıcı değil, güçlendiricidir. Hedef Türk edebiyatının ve akademisinin yerleşik cümle mimarisidir. Örnek referanslar `examples/guclu-cumleler.md` dosyasında tutulur.
 
 Güçlü cümlenin üç niteliği:
 
@@ -432,7 +432,7 @@ Türkçe noktalama kararlarında TDK Yazım Kuralları esas alınır. Ama TDK'n�
 
 İnsan ritmi sinyalleri Türk edebiyatının ve akademisinin yerleşik yazarlarından çıkarıldı. Edebi referans: Tanpınar, Ayfer Tunç, Barış Bıçakçı, Ahmet Ümit. Akademik referans: Ortaylı, Karpat, Keyder, Marcus, Aksoy.
 
-Örnek cümleler: `examples/gucli-cumleler.md`.
+Örnek cümleler: `examples/guclu-cumleler.md`.
 Detaylı gerekçeler: `docs/tdk-referanslari.md`, `docs/register-detayli.md`, `docs/mimari-kararlar.md`.
 
 Nicel metrik ASD-STE100 standardından esinlendi. Genel humanizer mimarisi harshaneel/humanize ve makotofalcon/humanizer-ja projelerinden ilham aldı.
