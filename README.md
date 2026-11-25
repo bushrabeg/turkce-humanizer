@@ -1,5 +1,9 @@
 # turkce-humanizer
 
+<!-- yarkr:badges:start -->
+[![Indexed on Yarkr](https://api.yarkr.com/functions/v1/api/api/v1/badges/repos/bushrabeg/turkce-humanizer/version.svg)](https://yarkr.com/arks/bushrabeg/turkce-humanizer)
+<!-- yarkr:badges:end -->
+
 > Türkçe metinlerden yapay zekâ yazım imzalarını temizleyen Claude skill'i. A Claude skill that removes AI writing signatures from Turkish text.
 
 **Güncel sürüm:** v3.2 · **Lisans:** MIT · **Uyumluluk:** Claude Desktop, Claude Code CLI, Claude.ai
@@ -120,3 +124,35 @@ Pull request açmadan önce SKILL.md'nin mimari kararlarına ([docs/mimari-karar
 ## Lisans
 
 MIT — özgürce kullan, değiştir, dağıt.
+
+<!-- yarkr:install:start -->
+## Install with Yarkr
+
+This repo is indexed on [Yarkr](https://yarkr.com/arks/bushrabeg/turkce-humanizer) as the ark [bushrabeg/turkce-humanizer](https://yarkr.com/arks/bushrabeg/turkce-humanizer), so its skills install into Claude Code, Codex, Cursor and other agent harnesses with one command.
+
+### CLI
+
+Install the whole ark, which Yarkr keeps equal to this repo:
+
+```bash
+npx yarkr-cli sync bushrabeg/turkce-humanizer
+```
+
+Or add individual skills:
+
+```bash
+npx yarkr-cli add skill:bushrabeg/turkce-humanizer/turkce-humanizer
+```
+
+No Node.js? `curl -fsSL https://yarkr.com/install.sh | sh` (macOS, Linux) or `irm https://yarkr.com/install.ps1 | iex` (Windows PowerShell) installs `yarkr` as a standalone binary; then type `yarkr` in place of `npx yarkr-cli`.
+
+### MCP
+
+Connect your agent to the ark over MCP:
+
+```bash
+npx yarkr-cli mcp add bushrabeg/turkce-humanizer
+```
+
+Or point any MCP client at `https://api.yarkr.com/functions/v1/api/mcp/o/bushrabeg/turkce-humanizer`.
+<!-- yarkr:install:end -->
